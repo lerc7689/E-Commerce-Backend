@@ -9,7 +9,7 @@ const getAll = catchError(async(req, res) => {
     const where = {};
     if(title) where.title = {[Op.iLike]: `%${title}%`};
     if(categoryId) where.categoryId = categoryId;
-    console.log(title, categoryId);
+
     const results = await Product.findAll({
         include : [Image, Category],
         where
@@ -47,17 +47,9 @@ const update = catchError(async(req, res) => {
 
 const productImages = catchError(async(req, res) => {
     const { id } = req.params;
-    //const { path, filename } = req.file
     const findedProduct = await Product.findByPk(id);
-    //if(!findedProduct) res.status(404).json({message:{"Product not found"}})
-    //await uploadToCloudinary(path, filename);
     await findedProduct.setImages(req.body)
     const images = await findedProduct.getImages();
-    // await Image.create({
-    //     url : path,
-    //     publicId : filename,
-    //     productId: findedProduct.id
-    // })
 
     return res.json(images)
 })
